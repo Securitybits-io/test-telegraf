@@ -14,7 +14,9 @@ services:
 
   telegraf:
     container_name: telegraf
-    build: ./telegraf
+    build:
+      context: ./telegraf
+      dockerfile: Dockerfile
     restart: unless-stopped
     volumes:
       - /docker/conf/telegraf/telegraf.conf:/etc/telegraf/telegraf.conf
