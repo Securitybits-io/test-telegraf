@@ -1,0 +1,23 @@
+services:
+  git-checkout:
+    container_name: git-checkout-monitoring
+    image: bitnami/git:latest
+    working_dir: /temp
+    command: >
+      bash -c "
+        find /temp -mindepth 1 -delete && 
+        git clone https://github.com/Securitybits-io/test-telegraf.git &&
+        cp -R ./homelab/apps/monitoring/* /docker/conf/ 
+      "
+    volumes:
+      - /docker:/docker
+
+  telegraf:
+    container_name: telegraf
+    build: ./telegraf
+    restart: unless-stopped
+    volumes:
+      - /docker/conf/telegraf/telegraf.conf:/etc/telegraf/telegraf.conf
+      - /docker/conf/telegraf/MIBs:/usr/share/snmp/mibs
+    depends_on: 
+      - git-checkout
